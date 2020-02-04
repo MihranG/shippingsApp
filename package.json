@@ -7,9 +7,38 @@
   "author": "FreightHub Recruiting Team",
   "license": "MIT",
   "scripts": {
-    "server": "json-server db.json"
+    "server": "json-server db.json",
+    "start": "webpack --env.development",
+    "start:prod": "webpack "
   },
   "dependencies": {
-    "json-server": "^0.14.2"
+    "@reduxjs/toolkit": "^1.2.3",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-redux": "^7.1.3",
+    "redux": "^4.0.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
+    "@types/node": "^13.7.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.4.2",
+    "file-loader": "^5.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "image-webpack-loader": "^6.0.0",
+    "json-server": "^0.14.2",
+    "react-hot-loader": "^4.12.19",
+    "style-loader": "^1.1.3",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.2"
   }
 }
