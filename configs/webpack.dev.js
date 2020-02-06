@@ -2,6 +2,11 @@ const webpack = require('webpack')
 module.exports = env =>{
     return{
         mode: 'development',
+        resolve : {
+            alias: {
+                'react-dom': '@hot-loader/react-dom',
+            }
+        },
         entry: [
         'react-hot-loader/patch', // activate HMR for React
         'webpack/hot/only-dev-server', // bundle the client for hot reloading, only- means to only hot reload for successful updates
