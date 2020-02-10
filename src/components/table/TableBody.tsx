@@ -22,6 +22,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
@@ -29,7 +30,6 @@ import { connect } from 'react-redux';
 
 function stableSort<T>(array: T[], cmp: (a: T, b: T) => number) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  // console.log('stabilizedThis', stabilizedThis)
   stabilizedThis.sort((a, b) => {
     const order = cmp(a[0], b[0]);
     if (order !== 0) return order;
@@ -44,18 +44,18 @@ function getSorting<K extends keyof any>(
   order: Order,
   orderBy: K,
 ): (a: { [key in K]: number | string }, b: { [key in K]: number | string }) => number {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-}
-
-function desc<T>(a: T, b: T, orderBy: keyof T) {
-  console.log('desx', a[orderBy],   b[orderBy])
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
+  const isAscending:boolean = order === 'asc' ;
+  const isAscendingMultiplier: number = isAscending ? -1 : 1
+  return function (a,b){
+    if (b[orderBy] < a[orderBy]) {
+      return -1 * isAscendingMultiplier;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1 * isAscendingMultiplier;
+    }
+    return 0;
   }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
+  
 }
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -83,52 +83,20 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-function TableBodyDisconnected({shippings, pageQty}) {
+function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
     const classes = useStyles();
-    const [order, setOrder] = React.useState<Order>('asc');
+    const [orderType, setOrderType] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof IShipment>('name');
-    const [selected, setSelected] = React.useState<string[]>([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(20);
-    React.useEffect(()=>{
-      console.log('useEggect', shippings)
-    },[])
-  
+
     const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof IShipment) => {
-      const isAsc = orderBy === property && order === 'asc';
-      setOrder(isAsc ? 'desc' : 'asc');
+      const isAsc = orderBy === property && orderType === 'asc';
+      setOrderType(isAsc ? 'desc' : 'asc');
       setOrderBy(property);
     };
   
-    const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.checked) {
-        const newSelecteds = shippings.map(n => n.name);
-        setSelected(newSelecteds);
-        return;
-      }
-      setSelected([]);
-    };
-  
-    const handleClick = (event: React.ChangeEvent<unknown>, name: string) => {
-      const selectedIndex = selected.indexOf(name);
-      let newSelected: string[] = [];
-  
-      if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selected, name);
-      } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(selected.slice(1));
-      } else if (selectedIndex === selected.length - 1) {
-        newSelected = newSelected.concat(selected.slice(0, -1));
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          selected.slice(0, selectedIndex),
-          selected.slice(selectedIndex + 1),
-        );
-      }
-  
-      setSelected(newSelected);
-    };
   
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
@@ -142,14 +110,13 @@ function TableBodyDisconnected({shippings, pageQty}) {
     const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
       setDense(event.target.checked);
     };
-  
-    const isSelected = (name: string) => selected.indexOf(name) !== -1;
-  
+    
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, shippings.length - page * rowsPerPage);
   
     return (
       <>
-        <Paper className={classes.paper}>
+        {isLoading ? <LinearProgress variant="query" color="secondary" />
+        :(<Paper className={classes.paper}>
           <TableContainer>
             <Table
               className={classes.table}
@@ -159,44 +126,39 @@ function TableBodyDisconnected({shippings, pageQty}) {
             >
               <TableHeader
                 classes={classes}
-                numSelected={selected.length}
-                order={order}
+                orderType={orderType}
                 orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
                 rowCount={shippings.length}
               />
               <TableBody>
               
-                {stableSort(shippings, getSorting(order, orderBy))
+                {stableSort(shippings, getSorting(orderType, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.name.toString());
+                    // const isItemSelected = isSelected(row.name.toString());
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <TableRow
                         hover
-                        onClick={()=>{console.log('rrr')}}
+                        onClick={
+                          //@ts-ignore
+                          (a: MouseEvent<HTMLTableRowElement, MouseEvent>):void=>{
+                            console.log('rrr', a,row.id, history);
+                            history.push(`/edit/${row.id}`)
+                        }
+                        }
                         role="checkbox"
-                        aria-checked={isItemSelected}
                         tabIndex={-1}
                         key={row.id}
-                        selected={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ 'aria-labelledby': labelId }}
-                            onChange={event => handleClick(event, row.name.toString())}
-                          />
+                        <TableCell component="th" id={labelId} scope="row" align='left'>
+                          {row.id}
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.name}
-                        </TableCell>
+                        <TableCell align="left">{row.name}</TableCell>
                         <TableCell align="right">{row.destination}</TableCell>
                         <TableCell align="right">{row.origin}</TableCell>
                         <TableCell align="right">{row.type}</TableCell>
-                        <TableCell align="right">{row.mode}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -217,7 +179,7 @@ function TableBodyDisconnected({shippings, pageQty}) {
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-        </Paper>
+        </Paper>)}
         <FormControlLabel
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dense padding"
@@ -228,6 +190,7 @@ function TableBodyDisconnected({shippings, pageQty}) {
   
   const mapStateToProps = (state: IState)=>({
     shippings : Object.values(state.shipments.data),
+    isLoading: state.shipments.isLoading,
     pageQty: state.pages.pageNumber
-})
+  })
   export default connect(mapStateToProps)(TableBodyDisconnected)

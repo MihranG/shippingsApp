@@ -1,5 +1,7 @@
 import { configureStore, createSlice, EnhancedStore } from "@reduxjs/toolkit";
 import { combineReducers, CombinedState } from "redux";
+import { reducer as formReducer } from 'redux-form'
+
 import { IState } from "./interfaces";
 
 const initialShipmentStoreState = {
@@ -25,6 +27,7 @@ const shipmentsSlice = createSlice({
     },
     editShipmentWithId(state, action){
         const {id, shipmentDetails} = action.payload;
+        console.log('edit', id, shipmentDetails)
         state.data[id] = shipmentDetails;
     },
     deleteShipments(state, action){
@@ -52,7 +55,7 @@ const pagesSlice = createSlice({
 const rootReducer = combineReducers({
   pages: pagesSlice.reducer,
   shipments: shipmentsSlice.reducer,
-  // viewMode: viewModeSlice.reducer
+  form: formReducer
 });
 
 export const store :EnhancedStore<CombinedState<IState>>= configureStore({

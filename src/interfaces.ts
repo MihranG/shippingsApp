@@ -25,7 +25,10 @@ export interface IState {
     },
     shipments: {
         data: {[n:number]:IShipment}
-    }
+        isLoading: boolean
+    },
+    form : any
+
 }
 
 export type Order = 'asc' | 'desc';

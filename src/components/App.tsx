@@ -5,6 +5,13 @@ import {Provider, connect} from 'react-redux';
 import {store} from '../store'
 import { fetchAllData } from "../thunk";
 import TableBody  from "./table/TableBody";
+import { BrowserRouter , Switch, Route } from 'react-router-dom'
+import ShippingItem from "./ShippingItem";
+import NotFound from './NotFound';
+
+import './App.css'
+import { Typography } from "@material-ui/core";
+
 //const reactLogo = require("./../assets/img/react_logo.svg");
 //import "./../assets/scss/App.scss";
 
@@ -15,22 +22,24 @@ class App extends React.Component<{getShipments: ()=>Promise<void>}, undefined> 
     }
 
     public render() {
-        console.log(123, this.props);
         
         return (
-            <div className="app">
+            <div className='app_wrapper'>
                 <Provider store={store}>
-                    <h1>Hello World!</h1>
-                    <p>Foo to the barz   2323  d</p>
-                    {/* <img src={reactLogo.default} height="480"/> */}
-                    <TableBody />
+                    <Typography variant='h2' color='primary'>
+                        Welcome to ur shippings app
+                    </Typography>
+                    <BrowserRouter>
+                        <Switch>
+                            <Route exact path="/" component={TableBody}/>
+                            <Route path="/edit/:id" component={ShippingItem}/>                      
+                        </Switch>
+                    </BrowserRouter >
                 </Provider>
             </div>
         );
     }
-}
-
-
+} 
 
 declare let module: object;
 
