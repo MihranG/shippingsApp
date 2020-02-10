@@ -7,9 +7,9 @@ import {RouteComponentProps} from 'react-router-dom'
 import { editShipmentWithId } from '../store'
 
 
-interface IComponentProps extends RouteComponentProps<{}> {
+type TComponentProps = RouteComponentProps<{}> 
 
-}
+
 
 interface IStateProps {
     itemValues: any
@@ -17,9 +17,7 @@ interface IStateProps {
     editShippingItem: (id: number, shipmentDetails: any)=>void
 }
 
-interface IProps extends IComponentProps, IStateProps{
-    
-}
+type TProps =  TComponentProps &  IStateProps
 
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -31,6 +29,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     form: {
       width: 500
+    },
+    field: {
+      width: 400
     },
     button: {
       margin: 15
@@ -69,8 +70,8 @@ const validate = values => {
     
     return errors
   }
-// @ts-ignore
-export const EditShipmentFormDisconnected: React.FC<IProps> = ({editShippingItem, match, formValues, itemValues , history, ...rest})=>{
+
+export const EditShipmentFormDisconnected: React.FC<TProps> = ({editShippingItem, match, formValues, itemValues , history, ...rest})=>{
     const handleFormSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         editShippingItem(match.params.id, formValues.values);
@@ -90,6 +91,7 @@ export const EditShipmentFormDisconnected: React.FC<IProps> = ({editShippingItem
             </Typography>
             <div>
                 <Field
+                    className={classes.field}
                     name="name"
                     component={renderTextField}
                     label="First Name"
@@ -97,6 +99,7 @@ export const EditShipmentFormDisconnected: React.FC<IProps> = ({editShippingItem
             </div>
             <div>
                 <Field
+                    className={classes.field}                
                     name="destination"
                     component={renderTextField}
                     label="Destination"
@@ -104,6 +107,7 @@ export const EditShipmentFormDisconnected: React.FC<IProps> = ({editShippingItem
             </div>
             <div>
                 <Field
+                    className={classes.field}                
                     name="origin"
                     component={renderTextField}
                     label="Origin"

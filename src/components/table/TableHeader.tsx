@@ -63,8 +63,5 @@ interface ITableHeaderProps {
     );
   }
 
-  // const mapStateToProps = (state)=>({
-  //     shippings : Object.values(state.shipments.data)
-  // })
 
   export default TableHeaderDisconnected

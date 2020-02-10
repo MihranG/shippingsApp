@@ -6,16 +6,26 @@ import {Table, TableBody,TableCell, TablePagination, TableRow, Paper, LinearProg
 import TableHeader from './TableHeader';
 import Header from '../HeaderComponent';
 import {Order, IShipment, IState} from '../../interfaces';
+import { start } from 'repl';
 
 
-function stableSort<T>(array: T[], cmp: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
+function stableSort<T>(array: T[], cmp: (a: T, b: T) => number, page: number, rowsPerPage: number) {
+
+  const startIndex = page * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const stabilizedTuple= array.slice(startIndex, endIndex ).map((el, index) => [el, index] as [T, number]);
+  stabilizedTuple.sort((a, b) => {
     const order = cmp(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-  return stabilizedThis.map(el => el[0]);
+  const sortedArray = [
+    ...array.slice(0,startIndex),
+    ...stabilizedTuple.map(el => el[0]),
+    ...array.slice(endIndex)
+  ]
+
+  return sortedArray
 }
 
 
@@ -63,7 +73,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
+function TableBodyDisconnected({shippings, history, isLoading}) {
     const classes = useStyles();
     const [orderType, setOrderType] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof IShipment>('name');
@@ -87,7 +97,9 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
     };
     
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, shippings.length - page * rowsPerPage);
-  
+    const arrayOfAppearingRows = stableSort(shippings, getSorting(orderType, orderBy), page, rowsPerPage)
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
     return (
       <>
        <Header  history={history}/>
@@ -109,18 +121,13 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
               />
               <TableBody>
               
-                {stableSort(shippings, getSorting(orderType, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    // const isItemSelected = isSelected(row.name.toString());
+                {arrayOfAppearingRows.map((row, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <TableRow
                         hover
-                        onClick={
-                          (a: React.MouseEvent<HTMLTableRowElement, MouseEvent>):void=>{
-                            history.push(`/edit/${row.id}`)
-                        }
+                        onClick={(a: React.MouseEvent<HTMLTableRowElement, MouseEvent>):void=>{
+                            history.push(`/edit/${row.id}`)}
                         }
                         role="checkbox"
                         tabIndex={-1}
@@ -161,6 +168,5 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
   const mapStateToProps = (state: IState)=>({
     shippings : Object.values(state.shipments.data),
     isLoading: state.shipments.isLoading,
-    pageQty: state.pages.pageNumber
   })
   export default connect(mapStateToProps)(TableBodyDisconnected)

@@ -26,12 +26,7 @@ export class AppDisconnected extends React.Component<IProps, undefined> {
         this.props.getShipments()
     }
 
-    handleShipmentResultClick(){
-        this.props
-    }
-
     public render() {
-        const {shipments} = this.props
         return (
             <div className='app_wrapper'>
                 <Provider store={store}>
@@ -50,10 +45,6 @@ export class AppDisconnected extends React.Component<IProps, undefined> {
 
 declare let module: object;
 
-const mapStateToProps = (state)=>({
-    page: state.pages,
-    shipments: Object.values(state.shipments.data)
-})
 
 const mapDispatchToProps = (dispatch: Dispatch):{
     getShipments: any
@@ -63,7 +54,7 @@ const mapDispatchToProps = (dispatch: Dispatch):{
         getShipments: dispatch(fetchAllData())
     }
 }
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppDisconnected);
+const ConnectedApp = connect(null, mapDispatchToProps)(AppDisconnected);
 
 export const Root = () => <Provider store={store}><ConnectedApp/></Provider>
 

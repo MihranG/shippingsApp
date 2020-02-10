@@ -34,9 +34,9 @@ const shipmentsSlice = createSlice({
   }
 });
 
-const pagesSlice = createSlice({
+const pagesSlice = createSlice({// this slice was intended to use for table, but as I used it only in table component didn't have time to delete )))
   name: "pages",
-  initialState: { pageNumber: 1,pagesQuantity:null },
+  initialState: { pageNumber: 1, pagesQuantity: null },
   reducers: {
     setData(state, action) {
       state.pageNumber = action.payload;
