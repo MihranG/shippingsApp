@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { shallow, mount } from 'enzyme';
-import shippingItem from './ShippingItem'
 import ShippingItem from './ShippingItem';
 import {data as mockData}  from '../mockShipmentData'
 import Provider from 'react-redux/lib/components/Provider';
 import configureStore from "redux-mock-store";
+
+import {Button} from '@material-ui/core'
 
 
 
@@ -26,10 +27,9 @@ describe('shippingItem Component',()=>{
     let wrapper;
     const matchPropMock = {
         params: {
-            id: 'S1000'
+            id: 'S1000' // id of shipping
         }
     }
-    // console.log(133,store.getState())
     beforeAll(()=>{
         wrapper = shallow(
             <Provider store={store}>
@@ -40,6 +40,7 @@ describe('shippingItem Component',()=>{
     test('should match snapshot',()=>{
         expect(wrapper).toMatchSnapshot()
     })
+    // TODO write tests for checking redux-form and save behaviour - didn't have time :(
     afterAll(()=>{
         wrapper.detach()
     })
