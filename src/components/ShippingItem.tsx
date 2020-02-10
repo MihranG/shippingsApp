@@ -1,14 +1,6 @@
 import * as React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import {TextField, Button, Paper, Typography, makeStyles, Theme, createStyles} from '@material-ui/core'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormControl from '@material-ui/core/FormControl'
-import Select from '@material-ui/core/Select'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
 import { connect, compose } from 'react-redux'
 import { IState } from '../interfaces'
 import {RouteComponentProps} from 'react-router-dom'
@@ -78,14 +70,15 @@ const validate = values => {
     return errors
   }
 // @ts-ignore
-const EditShipmentFormDisconnected: React.FC<IProps> = ({editShippingItem, match, formValues, itemValues , history, ...rest})=>{
+export const EditShipmentFormDisconnected: React.FC<IProps> = ({editShippingItem, match, formValues, itemValues , history, ...rest})=>{
     const handleFormSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
-        console.log('rest', rest, 44, match.params.id, formValues, 77, itemValues)
         e.preventDefault();
         editShippingItem(match.params.id, formValues.values);
         history.replace('/')
-        
-        
+    }
+
+    const handleFormCancel = ()=>{
+      history.replace('/')
     }
 
     const classes = useStyles();
@@ -119,10 +112,9 @@ const EditShipmentFormDisconnected: React.FC<IProps> = ({editShippingItem, match
             <Typography component='h3' className={classes.type}> 
                 Type: {itemValues.type}
             </Typography>
-            <Button type='submit' variant='contained' className={classes.button}> Change</Button>
+            <Button disabled={(formValues && (!formValues.anyTouched || !!formValues.syncErrors ))} type='submit' variant='contained' className={classes.button}> Change</Button>
+            <Button type='reset' variant='text' onClick={handleFormCancel}> Cancel</Button>
           </Paper>
-
-          
         </form>
     )
 }

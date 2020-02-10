@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Redux store should have appropriate editShipmentWithId action 1`] = `
+Object {
+  "payload": Object {
+    "id": 1,
+    "shipmentDetails": Object {
+      "data": "data",
+    },
+  },
+  "type": "shipments/editShipmentWithId",
+}
+`;
+
+exports[`Redux store should have appropriate setShipments action 1`] = `
+Object {
+  "payload": Array [
+    Object {
+      "cargo": Array [
+        Object {
+          "description": "1000 Blue T-shirts",
+          "type": "Fabric",
+          "volume": "2",
+        },
+        Object {
+          "description": "2000 Green T-shirts",
+          "type": "Fabric",
+          "volume": "3",
+        },
+      ],
+      "destination": "Saarbrücker Str. 38, 10405 Berlin",
+      "id": "S1000",
+      "mode": "sea",
+      "name": "TEST1",
+      "origin": "Shanghai Port",
+      "services": Array [
+        Object {
+          "type": "customs",
+        },
+      ],
+      "status": "ACTIVE",
+      "total": "1000",
+      "type": "FCL",
+      "userId": "U1000",
+    },
+    Object {
+      "cargo": Array [
+        Object {
+          "description": "300 Tables",
+          "type": "Furniture",
+          "volume": "20",
+        },
+        Object {
+          "description": "1500 Chairs",
+          "type": "Furniture",
+          "volume": "15",
+        },
+      ],
+      "destination": "Saarbrücker Str. 38, 10405 Berlin",
+      "id": "S1001",
+      "mode": "sea",
+      "name": "TEST2",
+      "origin": "Ningbo port",
+      "services": Array [
+        Object {
+          "type": "customs",
+        },
+        Object {
+          "type": "insurance",
+          "value": "100",
+        },
+      ],
+      "status": "ACTIVE",
+      "total": "3000",
+      "type": "FCL",
+      "userId": "U1002",
+    },
+  ],
+  "type": "shipments/setShipments",
+}
+`;

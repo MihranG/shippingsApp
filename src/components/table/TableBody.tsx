@@ -1,32 +1,12 @@
 import * as React from 'react';
-import TableHeader from './TableHeader'
-import {Order, IShipment, IState} from '../../interfaces'
-
-
-
-import clsx from 'clsx';
-import { createStyles, lighten, makeStyles, Theme } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
-
 import { connect } from 'react-redux';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import {Table, TableBody,TableCell, TablePagination, TableRow, Paper, LinearProgress, TableContainer} from '@material-ui/core';
+
+import TableHeader from './TableHeader';
+import Header from '../HeaderComponent';
+import {Order, IShipment, IState} from '../../interfaces';
+
 
 function stableSort<T>(array: T[], cmp: (a: T, b: T) => number) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -44,7 +24,7 @@ function getSorting<K extends keyof any>(
   order: Order,
   orderBy: K,
 ): (a: { [key in K]: number | string }, b: { [key in K]: number | string }) => number {
-  const isAscending:boolean = order === 'asc' ;
+  const isAscending: boolean = order === 'asc' ;
   const isAscendingMultiplier: number = isAscending ? -1 : 1
   return function (a,b){
     if (b[orderBy] < a[orderBy]) {
@@ -88,7 +68,6 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
     const [orderType, setOrderType] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof IShipment>('name');
     const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(20);
 
     const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof IShipment) => {
@@ -106,22 +85,19 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     };
-  
-    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setDense(event.target.checked);
-    };
     
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, shippings.length - page * rowsPerPage);
   
     return (
       <>
+       <Header  history={history}/>
         {isLoading ? <LinearProgress variant="query" color="secondary" />
         :(<Paper className={classes.paper}>
           <TableContainer>
             <Table
               className={classes.table}
               aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
+              size={'small'}
               aria-label="enhanced table"
             >
               <TableHeader
@@ -142,9 +118,7 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
                       <TableRow
                         hover
                         onClick={
-                          //@ts-ignore
-                          (a: MouseEvent<HTMLTableRowElement, MouseEvent>):void=>{
-                            console.log('rrr', a,row.id, history);
+                          (a: React.MouseEvent<HTMLTableRowElement, MouseEvent>):void=>{
                             history.push(`/edit/${row.id}`)
                         }
                         }
@@ -163,7 +137,7 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
                     );
                   })}
                 {emptyRows > 0 && (
-                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                  <TableRow style={{ height: (33) * emptyRows }}>
                     <TableCell colSpan={6} />
                   </TableRow>
                 )}
@@ -171,7 +145,7 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[3,5,6,15,20,30]}
+            rowsPerPageOptions={[20, 40]}
             component="div"
             count={shippings.length}
             rowsPerPage={rowsPerPage}
@@ -180,10 +154,6 @@ function TableBodyDisconnected({shippings, pageQty, history, isLoading}) {
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Paper>)}
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Dense padding"
-        />
         </>
     );
   }

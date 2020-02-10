@@ -4,17 +4,17 @@ export interface ICargo {
     volume: string
 }
 export interface IShipment {
-    id:number
+    id:string
     name: string
     cargo: ICargo[]
     mode: string
     type: string
     destination: string
     origin: string
-    services: {type: string}[]
+    services: {type: string, value?: string}[]
     total: string
     status: string
-    userID: string
+    userId: string
 }
 
 export type TShipmentsFromServer = {data: IShipment[], qty: number}

@@ -22,12 +22,10 @@ const shipmentsSlice = createSlice({
           const {id} = shipment;
           shipmentsNormalized[id] = shipment;
         });
-        console.log('shipmentsNormalized',shipmentsNormalized)
         state.data = shipmentsNormalized;
     },
     editShipmentWithId(state, action){
         const {id, shipmentDetails} = action.payload;
-        console.log('edit', id, shipmentDetails)
         state.data[id] = shipmentDetails;
     },
     deleteShipments(state, action){
@@ -44,12 +42,10 @@ const pagesSlice = createSlice({
       state.pageNumber = action.payload;
     },
     setQuantity(state, action) {
-
       state.pagesQuantity = Math.ceil(action.payload/20)
     }
   }
 });
-
 
 
 const rootReducer = combineReducers({
@@ -71,8 +67,3 @@ export const {
   actions: { setData, setQuantity },
   reducer: pagesReducer
 } = pagesSlice;
-
-// export const {
-//   actions: { setActiveMode },
-//   reducer: viewModeReducer
-// } = viewModeSlice;

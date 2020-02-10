@@ -10,29 +10,36 @@ import ShippingItem from "./ShippingItem";
 import NotFound from './NotFound';
 
 import './App.css'
-import { Typography } from "@material-ui/core";
+import { IShipment } from "../interfaces";
 
 //const reactLogo = require("./../assets/img/react_logo.svg");
 //import "./../assets/scss/App.scss";
 
-class App extends React.Component<{getShipments: ()=>Promise<void>}, undefined> {
+
+interface IProps {
+    getShipments: ()=>Promise<void>
+    shipments: IShipment[]
+}
+
+export class AppDisconnected extends React.Component<IProps, undefined> {
     componentDidMount(){
-        console.log('this.props', this.props)
         this.props.getShipments()
     }
 
+    handleShipmentResultClick(){
+        this.props
+    }
+
     public render() {
-        
+        const {shipments} = this.props
         return (
             <div className='app_wrapper'>
                 <Provider store={store}>
-                    <Typography variant='h2' color='primary'>
-                        Welcome to ur shippings app
-                    </Typography>
                     <BrowserRouter>
                         <Switch>
                             <Route exact path="/" component={TableBody}/>
-                            <Route path="/edit/:id" component={ShippingItem}/>                      
+                            <Route path="/edit/:id" component={ShippingItem}/>
+                            <Route path="*" component= {NotFound}/>                      
                         </Switch>
                     </BrowserRouter >
                 </Provider>
@@ -45,7 +52,7 @@ declare let module: object;
 
 const mapStateToProps = (state)=>({
     page: state.pages,
-    shipments: state.shipments
+    shipments: Object.values(state.shipments.data)
 })
 
 const mapDispatchToProps = (dispatch: Dispatch):{
@@ -54,11 +61,10 @@ const mapDispatchToProps = (dispatch: Dispatch):{
     return {
         //@ts-ignore
         getShipments: dispatch(fetchAllData())
-
     }
 }
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppDisconnected);
 
-const Root = () => <Provider store={store}><ConnectedApp/></Provider>
+export const Root = () => <Provider store={store}><ConnectedApp/></Provider>
 
 export default hot(module)(Root);

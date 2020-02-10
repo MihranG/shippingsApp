@@ -3,3 +3,13 @@
     flex-direction: column;
     align-items: center;
 }
+
+.app_header{
+    display: flex;
+    align-items: center;
+}
+
+.search_bar{
+    width: 300px;
+    margin: 0 10px
+}

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`All app should match snapshot 1`] = `ReactWrapper {}`;
+
+exports[`App component shallow should match snapshot 1`] = `ShallowWrapper {}`;
